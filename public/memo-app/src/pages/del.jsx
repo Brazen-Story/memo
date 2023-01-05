@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { createGlobalStyle } from "styled-components";
@@ -78,22 +78,26 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 function Del() {
+
+  const params = useParams();
+
   const navigate = useNavigate();
   //   const [data, setData] = useState(null);
   const item = JSON.parse(localStorage.getItem("memo-app-user"));
 
   const location = useLocation();
-  const user = location.state.newArray; //값 념겨받음
+  const user = location.state.newArrays; //값 념겨받음
 
   const MOVE = () => {
     navigate(`/user/${item.email}`); //다시 화면으로
   };
 
   const list = {
-    title: user[0],
-    writer: user[1],
-    content: user[2],
-    time: user[3],
+    _id : user[0],
+    title: user[1],
+    writer: user[2],
+    content: user[3],
+    time: user[4],
   }; // 오브젝트로 만들기
 
   list.user = item.email;
@@ -110,7 +114,7 @@ function Del() {
   return (
     <div>
       <GlobalStyle></GlobalStyle>
-      <h2>{user[0]} 파일을 정말로 삭제하시겠습니까?</h2>
+      <h2>{user[1]} 파일을 정말로 삭제하시겠습니까?</h2>
       <br></br>
       <button onClick={Del} className="yes">
         네

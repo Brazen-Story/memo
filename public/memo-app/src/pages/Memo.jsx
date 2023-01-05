@@ -3,7 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import axios from "axios";
 import Nav from "../Nav";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
 import "moment/locale/ko";
 import { createGlobalStyle } from "styled-components";
 import TableRow from "@material-ui/core/TableRow";
@@ -14,7 +14,7 @@ import "react-calendar/dist/Calendar.css";
 import "./cal.css";
 import moment from "moment";
 
-const { mymemoRoute, mainRoute } = require("../utils/APIRoutes");
+const { mymemoRoute, mainRoute, mainDeleteRoute } = require("../utils/APIRoutes");
 
 <link
   href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Nerko+One&family=Noto+Sans+KR:wght@300&display=swap"
@@ -130,6 +130,10 @@ function isActive(path) {
 }
 
 function Memo() {
+
+  //const params = useParams(date);
+  //console.log(params)
+
   const [value, onChange] = useState(new Date());
 
   const navigate = useNavigate();
@@ -142,6 +146,14 @@ function Memo() {
     setdataList(response.data);
     //console.log("success");
   };
+
+  const DelData = async (id) => {
+    await axios.delete(`${mainDeleteRoute}/${id}`);
+
+    window.location.replace("/");
+    
+   }; //삭제 성공
+ 
 
   useEffect(() => {
     GetData();
@@ -167,47 +179,44 @@ function Memo() {
   const onSubmit = (e) => {
     const { name } = e.target;
     setContent(name.split(","));
-
+    console.log(name);
     // const { writer } = e.target;
     // setWriter(writer);
   };
 
   const deldatas = {
-    title: list[0],
-    time: list[1],
-    writer: list[2],
-    contentBody: list[3],
+    _id : list[0],
+    title: list[1],
+    time: list[2],
+    writer: list[3],
+    contentBody: list[4],
   };
-
-  // deldatas.contentBody = deldatas.contentBody.replace(/%A0/gi, "니ㅏ어리ㅏ너");
 
   deldatas.user = item.email;
 
-  // deldatas.contentBody = reactStringReplace(deldatas.contentBody, '')
-  // const a = () => {
-
-  // };
-  // const datas = () => {
-  //   if (deldatas.contentBody.includes("%A0")) {
-  //     deldatas.contentBody.includes("%A0");
-  //   } else {
-  //     console.log("false");
+  // const DelData = async () => {
+  //   if (handleValidation()) {
+  //     const { data } = await axios.post(delmain, deldatas);
+  //     if (data.status === false) {
+  //       console.log("data err");
+  //     }
+  //     if (data.status === true) {
+  //       window.location.reload();
+  //     }
   //   }
-  //};
+  //   // if (handleValidation()){
+  //   //   const {data} = await axios.delete(mainRoute, {data : deldatas});
 
-  //console.log(deldatas);
+  //   //   if(data.status === false){
+  //   //     console.log("s");
+  //   //   }
 
-  const DelData = async () => {
-    if (handleValidation()) {
-      const { data } = await axios.post(mainRoute, deldatas);
-      if (data.status === false) {
-        console.log("data err");
-      }
-      if (data.status === true) {
-        window.location.reload();
-      }
-    }
-  };
+  //   //   if(data.status === true){
+  //   //     console.log("a");
+  //   //   }
+  //   };
+  
+
 
   const handleValidation = () => {
     if (
@@ -230,13 +239,15 @@ function Memo() {
   };
   const [selectedDayRange, setSelectedDayRange] = useState(new Date());
   const date = moment(selectedDayRange).format("YYYY-MM-DD");
+  console.log(date);
   const datas = deldatas.contentBody
     ? deldatas.contentBody.includes("%A0")
       ? deldatas.contentBody.replace(/%A0/gi, "\n")
       : deldatas.contentBody
     : null;
   const view = decodeURIComponent(deldatas.contentBody);
-  console.log(view);
+  //console.log(view); // 메모 내용 확인.
+
   //console.log(localDate.slice(0, 10));
   //<button>달력</button>
   //<h2 style={{ color: "white" }}>{item.email}'s memo</h2>
@@ -287,14 +298,14 @@ function Memo() {
                               <button
                                 className="bodybtn"
                                 onClick={onSubmit}
-                                name={[e.title, e.time, e.writer, e.content]}
+                                name={[e._id, e.title, e.time, e.writer, e.content]}
                               >
                                 {" "}
                                 확인{" "}
                               </button>
                             </TableCell>
                             <TableCell>
-                              <button className="bodybtn" onClick={DelData}>
+                              <button className="bodybtn" onClick={() => DelData(e._id)}>
                                 {" "}
                                 삭제{" "}
                               </button>

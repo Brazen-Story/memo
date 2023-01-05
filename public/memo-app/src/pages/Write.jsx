@@ -217,6 +217,7 @@ function Write() {
     const { data } = await axios.post(WriteRoute, memolist);
 
     if (data.status === false) {
+      alert("제목을 바꿔주세요!");
       toast.error(data.msg, toastOptions);
     }
 
@@ -227,30 +228,7 @@ function Write() {
   const HOME = () => {
     navigate("/");
   };
-  // const Mymemo = () => {
-  //   navigate("/user/:email");
-  // };
-
-  // <div>
-  //     <div>
-  //       <input type="file" name="myfile" accept=".txt" onChange={onChange} />
-  //     </div>
-  //     <form>
-  //       <button onClick={onSubmit}>저장</button>
-  //       <button onClick={HOME}> MAIN PAGE </button>
-  //       <NavLink to={`/user/${item.email}`}>
-  //         <button>My memo</button>
-  //       </NavLink>{" "}
-  //       {nowTime}
-  //       {title && <pre>{title}</pre>}
-  //       <br></br>
-  //       {text && <pre>{text}</pre>}
-  //     </form>
-  //   </div>
-
-  // .input {
-  //   margin-top: 20%;
-  // }
+ 
   return (
     <Nav>
       <Wrapper>

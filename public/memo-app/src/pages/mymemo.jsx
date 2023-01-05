@@ -136,7 +136,6 @@ function Mymemo() {
   const GetData = async () => {
     const response = await axios.post(mymemoRoute);
     setdataList(response.data);
-    // console.log("success");
 
     console.log(response.data);
     console.log(response);
@@ -157,29 +156,49 @@ function Mymemo() {
   };
 
   //console.log(content);
-  const newArray = [];
-  const me = dataList?.content
-    .filter((e) => e.writer === content[0] && e.title === content[1])
-    .map((e) => {
-      newArray.push(e.title, e.writer, e.content, e.time);
-    });
+  // const newArray = [];
+  // const me = dataList?.content
+  //   .filter((e) => e.writer === content[0] && e.title === content[1])
+  //   .map((e) => {
+  //     newArray.push(e.title, e.writer, e.content, e.time);
+  //   }); 구형데이터
+
+    const newArrays = [];
+    const mes = dataList?.content
+      .filter((e) => e.writer === content[0] && e.title === content[1])
+      .map((e) => {
+        newArrays.push(e._id, e.title, e.writer, e.content, e.time);
+      });
+
+   // console.log(me);
+    console.log(mes);
+
 
   //console.log(newArray[2]);
 
-  const mo = {
-    title: newArray[0],
-    writer: newArray[1],
-    content: newArray[2],
-    time: newArray[3],
-  };
+  const mos = {
+    _id : newArrays[0],
+    title: newArrays[1],
+    writer: newArrays[2],
+    content: newArrays[3],
+    time: newArrays[4],
+  }; // 새로운 데이터
 
-  console.log(mo);
+  // const mo = {
+  //   title: newArray[0],
+  //   writer: newArray[1],
+  //   content: newArray[2],
+  //   time: newArray[3],
+  // }; // 구형 데이터
+
+  console.log(mos);
+  // console.log(mo);
 
   //값이 있으면 작동 없으면 err
 
   const onSubmit = async () => {
     if (handleValidation()) {
-      const { data } = await axios.post(mymemoRoute, mo);
+      const { data } = await axios.post(mymemoRoute, mos);
       if (data.status === false) {
         console.log("data err");
       }
@@ -190,16 +209,16 @@ function Mymemo() {
   };
 
   const handleValidation = () => {
-    if (mo.title === "") {
+    if (mos.title === "") {
       console.log("err");
       return false;
-    } else if (mo.writer === "") {
+    } else if (mos.writer === "") {
       console.log("writer err");
       return false;
-    } else if (mo.content === "") {
+    } else if (mos.content === "") {
       console.log("content err");
       return false;
-    } else if (mo.time === "") {
+    } else if (mos.time === "") {
       console.log("time err");
       return false;
     }
@@ -219,12 +238,12 @@ function Mymemo() {
   const [selectedDayRange, setSelectedDayRange] = useState(new Date());
   const date = moment(selectedDayRange).format("YYYY-MM-DD");
 
-  const datas = mo.content
-    ? mo.content.includes("%A0")
-      ? mo.content.replace(/%A0/gi, "\n")
-      : mo.content
+  const datas = mos.content
+    ? mos.content.includes("%A0")
+      ? mos.content.replace(/%A0/gi, "\n")
+      : mos.content
     : null;
-  const view = decodeURIComponent(mo.content);
+  const view = decodeURIComponent(mos.content);
 
   return (
     <Nav>
@@ -283,7 +302,7 @@ function Mymemo() {
                             </TableCell>
                             <TableCell>
                               <div>
-                                <Link to="/del" state={{ newArray }}>
+                                <Link to="/del" state={{ newArrays }}>
                                   <button className="bodybtn">삭제</button>
                                 </Link>
                               </div>
@@ -297,7 +316,7 @@ function Mymemo() {
           </Nav.Item>
         </Nav.List>
         <Main className="content">
-          <h3>제목 : {mo.title}</h3>
+          <h3>제목 : {mos.title}</h3>
           <br />
           {view.split("\n").map((data) => (
             <div>

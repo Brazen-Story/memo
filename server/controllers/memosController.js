@@ -3,10 +3,17 @@ const mainList = require("../model/mainModel");
 
 module.exports.write = async (req, res, next) => {
   try {
-    const { title, content, writer, time } = req.body;
+    let { title, content, writer, time } = req.body; //const는 값이 바뀌지않음. 그래서 let으로
+    console.log("저장 발동");
+
+    // 제목 중복 1 붙여주기
+    //let i = 0;
     // const titlenameCheck = await memoList.findOne({ title });
-    // if (titlenameCheck)
-    //   return res.json({ msg: "같은 파일명이 있습니다.", status: false });
+    // if (titlenameCheck){
+    //   i = i + 1;
+    //   title = title + " (" + i + ")";
+    // }
+
     const memo = await memoList.create({
       title,
       writer,
@@ -22,10 +29,12 @@ module.exports.write = async (req, res, next) => {
 
 module.exports.mymemo = async (req, res, next) => {
   try {
-    const { title, content, writer, time } = req.body;
+    const { _id, title, content, writer, time } = req.body;
     const contentBody = await memoList.find({});
-    if (title && content && writer && time) {
+    console.log(req.body);
+    if (_id && title && content && writer && time) {
       const main = await mainList.create({
+        _id,
         title,
         writer,
         content,
@@ -45,7 +54,8 @@ module.exports.del = async (req, res, next) => {
   try {
     const { title, content, writer, time, user } = req.body;
     if (writer === user) {
-      console.log(writer === user);
+      //console.log(writer === user);//true
+      console.log("개인 삭제 발동")
       const main = await memoList.deleteMany({
         title,
         writer,
