@@ -29,12 +29,11 @@ module.exports.write = async (req, res, next) => {
 
 module.exports.mymemo = async (req, res, next) => {
   try {
-    const { _id, title, content, writer, time } = req.body;
+    const { title, content, writer, time } = req.body;
     const contentBody = await memoList.find({});
     console.log(req.body);
-    if (_id && title && content && writer && time) {
+    if (title && content && writer && time) {
       const main = await mainList.create({
-        _id,
         title,
         writer,
         content,

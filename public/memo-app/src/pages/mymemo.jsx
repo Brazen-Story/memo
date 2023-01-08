@@ -155,14 +155,6 @@ function Mymemo() {
     setContent(name.split(","));
   };
 
-  //console.log(content);
-  // const newArray = [];
-  // const me = dataList?.content
-  //   .filter((e) => e.writer === content[0] && e.title === content[1])
-  //   .map((e) => {
-  //     newArray.push(e.title, e.writer, e.content, e.time);
-  //   }); 구형데이터
-
     const newArrays = [];
     const mes = dataList?.content
       .filter((e) => e.writer === content[0] && e.title === content[1])
@@ -170,26 +162,23 @@ function Mymemo() {
         newArrays.push(e._id, e.title, e.writer, e.content, e.time);
       });
 
-   // console.log(me);
-    console.log(mes);
+  console.log(mes);
 
+  var today = new Date();
 
-  //console.log(newArray[2]);
+  var year = today.getFullYear();
+  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+  var day = ('0' + today.getDate()).slice(-2);
+
+  var dateString = year + '-' + month  + '-' + day;
 
   const mos = {
     _id : newArrays[0],
     title: newArrays[1],
     writer: newArrays[2],
     content: newArrays[3],
-    time: newArrays[4],
+    time: dateString,
   }; // 새로운 데이터
-
-  // const mo = {
-  //   title: newArray[0],
-  //   writer: newArray[1],
-  //   content: newArray[2],
-  //   time: newArray[3],
-  // }; // 구형 데이터
 
   console.log(mos);
   // console.log(mo);
@@ -224,19 +213,23 @@ function Mymemo() {
     }
     return true;
   };
+
   const HOME = () => {
     navigate("/");
   };
-  const DelSite = async () => {
-    //const { data } = await axios.post("http://localhost:5050/api/auth/del", mo);
-    navigate("/del");
-  };
+
+
   const Write = async () => {
     navigate("/write");
   };
 
-  const [selectedDayRange, setSelectedDayRange] = useState(new Date());
+  const [selectedDayRange, setSelectedDayRange] = useState(new Date()); //실행 될 때마다 date로 페이지 리로드.
   const date = moment(selectedDayRange).format("YYYY-MM-DD");
+
+   useEffect(() => {
+    // Update the URL when the date changes
+    window.history.pushState({}, "", `/user/${usemail}/${date}`);
+  }, [date]);
 
   const datas = mos.content
     ? mos.content.includes("%A0")
@@ -264,7 +257,6 @@ function Mymemo() {
             <Calendar
               className="Cal"
               onChange={setSelectedDayRange}
-              value={selectedDayRange}
             />
             <br></br>
             <div className="row">
@@ -327,46 +319,6 @@ function Mymemo() {
         </Main>
       </Layout>
     </Nav>
-    // <div>
-    //   {dataList?.content !== undefined
-    //     ? dataList?.content
-    //         .filter((e) => e.writer === usemail)
-    //         .map((e, index) => (
-    //           <div>
-    // <button
-    //   onClick={handleClickButton}
-    //   name={[e.writer, e.title]}
-    //   key={index}
-    // >
-    //   {e.title}
-    // </button>{" "}
-    //             {e.time} <br />
-    //           </div>
-    //         ))
-    //     : null}
-    //   <div>
-    //     {dataList?.content !== undefined
-    //       ? dataList?.content
-    //           .filter(
-    //             (e) =>
-    //               e.writer === usemail &&
-    //               e.writer === content[0] &&
-    //               e.title === content[1]
-    //           ) // && e.title === content title?
-    //           .map((e) => (
-    //             <div>
-    //               <h4>{decodeURIComponent(e.content)}</h4> <br />
-    //             </div>
-    //           ))
-    //       : null}
-    //     </div>
-    //     <button onClick={Write}>글쓰기</button>
-    //     <button onClick={HOME}> MAIN PAGE </button>
-    //     <button onClick={onSubmit}> 공유 </button>
-    //     <Link to="/del" state={{ newArray }}>
-    //       <button>삭제</button>
-    //     </Link>
-    //   </div>
   );
 }
 

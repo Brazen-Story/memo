@@ -9,7 +9,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/write", write);
 router.post("/user/:email", mymemo);
-router.post("/", main);//sd
+router.post("/:date", main);//sd
 router.post("/del", del);
 //router.post("/", mymemos);
 router.delete("/mainDeleteRoute/:id", mainDeleteRoute);

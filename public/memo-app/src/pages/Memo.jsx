@@ -131,8 +131,7 @@ function isActive(path) {
 
 function Memo() {
 
-  //const params = useParams(date);
-  //console.log(params)
+  const params = useParams();
 
   const [value, onChange] = useState(new Date());
 
@@ -174,7 +173,6 @@ function Memo() {
     return false;
   };
   const [list, setContent] = useState([]);
-  // const [arr, setArr] = useState([]);
 
   const onSubmit = (e) => {
     const { name } = e.target;
@@ -237,17 +235,28 @@ function Memo() {
     }
     return true;
   };
-  const [selectedDayRange, setSelectedDayRange] = useState(new Date());
+  const [selectedDayRange, setSelectedDayRange] = useState(new Date()); //바뀔때마다 실행이 된다?
   const date = moment(selectedDayRange).format("YYYY-MM-DD");
+
+  console.log(selectedDayRange);
   console.log(date);
+
+  useEffect(() => {
+    // Update the URL when the date changes
+    window.history.pushState({}, "", `/${date}`);
+  }, [date]);
+  
   const datas = deldatas.contentBody
     ? deldatas.contentBody.includes("%A0")
       ? deldatas.contentBody.replace(/%A0/gi, "\n")
       : deldatas.contentBody
     : null;
+  
   const view = decodeURIComponent(deldatas.contentBody);
   //console.log(view); // 메모 내용 확인.
 
+
+  
   //console.log(localDate.slice(0, 10));
   //<button>달력</button>
   //<h2 style={{ color: "white" }}>{item.email}'s memo</h2>
