@@ -9,6 +9,14 @@ const { registerRoute } = require("../utils/APIRoutes.js");
 function Register() {
   const navigate = useNavigate();
 
+  var today = new Date();
+
+  var year = today.getFullYear();
+  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+  var day = ('0' + today.getDate()).slice(-2);
+
+  var dateString = year + '-' + month  + '-' + day;
+
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -26,7 +34,7 @@ function Register() {
 
   useEffect(() => {
     if (localStorage.getItem("memo-app-user")) {
-      navigate("/");
+      navigate(`/${dateString}`);
     }
   }, []);
 
@@ -51,7 +59,7 @@ function Register() {
 
       if (data.status === true) {
         localStorage.setItem("memo-app-user", JSON.stringify(data.user));
-        navigate("/");
+        navigate(`/${dateString}`);
       }
     }
   };

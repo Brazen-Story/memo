@@ -26,8 +26,6 @@ function Login() {
 
   var dateString = year + '-' + month  + '-' + day;
 
-  console.log(dateString);
-
   useEffect(() => {
     if (localStorage.getItem("memo-app-user")) {
       navigate(`/${dateString}`);

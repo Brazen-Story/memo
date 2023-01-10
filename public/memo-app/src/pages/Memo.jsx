@@ -133,7 +133,22 @@ function Memo() {
 
   const params = useParams();
 
-  const [value, onChange] = useState(new Date());
+ // console.log("p.Date",params.date)
+
+  useEffect(() => {
+    console.log("asd",params.date);
+  },[params.date]); //더블 클릭을 해야지만 바뀐다?
+
+
+  //console.log("params.date : ", params.date);
+  //onclickday value
+  const clickDay = (value) => { //매개변수로 피라미터가 들어온다
+    const a = moment(value).format("YYYY-MM-DD");
+    navigate(`/${a}`);
+  }
+
+
+  //console.log(params); 선택된 날짜 확인
 
   const navigate = useNavigate();
   const [dataList, setdataList] = useState(null);
@@ -149,8 +164,8 @@ function Memo() {
   const DelData = async (id) => {
     await axios.delete(`${mainDeleteRoute}/${id}`);
 
-    window.location.replace("/");
-    
+    window.location.reload(`/${date}`);//당첨
+    //navigate(`/${date}`); //안되는 이유?
    }; //삭제 성공
  
 
@@ -177,7 +192,7 @@ function Memo() {
   const onSubmit = (e) => {
     const { name } = e.target;
     setContent(name.split(","));
-    console.log(name);
+    //console.log(name);
     // const { writer } = e.target;
     // setWriter(writer);
   };
@@ -235,28 +250,21 @@ function Memo() {
     }
     return true;
   };
-  const [selectedDayRange, setSelectedDayRange] = useState(new Date()); //바뀔때마다 실행이 된다?
+
+  const [selectedDayRange, setSelectedDayRange] = useState(new Date());
   const date = moment(selectedDayRange).format("YYYY-MM-DD");
+  //console.log(date);
+  // const [selectedDayRanges, setSelectedDayRanges] = useState(new Date());
 
-  console.log(selectedDayRange);
-  console.log(date);
+  // const onChangeDay = selectedDayRanges => {
+  //   setSelectedDayRanges(selectedDayRanges);
+  // }
 
-  useEffect(() => {
-    // Update the URL when the date changes
-    window.history.pushState({}, "", `/${date}`);
-  }, [date]);
-  
-  const datas = deldatas.contentBody
-    ? deldatas.contentBody.includes("%A0")
-      ? deldatas.contentBody.replace(/%A0/gi, "\n")
-      : deldatas.contentBody
-    : null;
-  
+  // console.log(date);
+
   const view = decodeURIComponent(deldatas.contentBody);
   //console.log(view); // 메모 내용 확인.
 
-
-  
   //console.log(localDate.slice(0, 10));
   //<button>달력</button>
   //<h2 style={{ color: "white" }}>{item.email}'s memo</h2>
@@ -284,8 +292,8 @@ function Memo() {
           <Nav.Item>
             <Calendar
               className="Cal"
+              onClickDay={clickDay}
               onChange={setSelectedDayRange}
-              value={selectedDayRange}
             />
             <br></br>
             <div className="row">

@@ -192,7 +192,9 @@ function Mymemo() {
         console.log("data err");
       }
       if (data.status === true) {
-        navigate("/");
+        //navigate("/");
+        navigate(`/${date}`);
+
       }
     }
   };
@@ -227,7 +229,6 @@ function Mymemo() {
   const date = moment(selectedDayRange).format("YYYY-MM-DD");
 
    useEffect(() => {
-    // Update the URL when the date changes
     window.history.pushState({}, "", `/user/${usemail}/${date}`);
   }, [date]);
 

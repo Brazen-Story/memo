@@ -15,7 +15,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/write" element={<Write />} />
         <Route exact path="/user/:email" element={<Mymemo />} />
-        <Route path="/:date" element={<Memo />} />
+        <Route path="/:date" element={<Memo />} /> 
         <Route path="/del" element={<Del />} />
       </Routes>
     </BrowserRouter>
