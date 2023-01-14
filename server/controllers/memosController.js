@@ -6,14 +6,6 @@ module.exports.write = async (req, res, next) => {
     let { title, content, writer, time } = req.body; //const는 값이 바뀌지않음. 그래서 let으로
     console.log("저장 발동");
 
-    // 제목 중복 1 붙여주기
-    //let i = 0;
-    // const titlenameCheck = await memoList.findOne({ title });
-    // if (titlenameCheck){
-    //   i = i + 1;
-    //   title = title + " (" + i + ")";
-    // }
-
     const memo = await memoList.create({
       title,
       writer,
@@ -31,7 +23,6 @@ module.exports.mymemo = async (req, res, next) => {
   try {
     const { title, content, writer, time } = req.body;
     const contentBody = await memoList.find({});
-    console.log(req.body);
     if (title && content && writer && time) {
       const main = await mainList.create({
         title,

@@ -6,17 +6,21 @@ import Login from "./pages/Login";
 import Write from "./pages/Write";
 import Mymemo from "./pages/mymemo";
 import Del from "./pages/del";
+import PageNotFound from "./pages/PageNotFound";
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/Register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/write" element={<Write />} />
-        <Route exact path="/user/:email" element={<Mymemo />} />
-        <Route path="/:date" element={<Memo />} /> 
-        <Route path="/del" element={<Del />} />
+        <Route exact path="/Register" element={<Register />} />
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/write" element={<Write />} />
+        <Route exact path="/user/:email/:date" element={<Mymemo />} />
+        <Route exact path="/:date/*" element={<Memo />} /> 
+        <Route exact path="/del" element={<Del />} />
+        {/* <Route path="/*" element={<PageNotFound />} /> */}
+        <Route path="/PageNotFound" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );

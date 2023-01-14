@@ -121,10 +121,28 @@ const body = styled.div`
 `;
 
 const { mymemoRoute, mainRoute, mmyRoute } = require("../utils/APIRoutes");
-const HTMLDecoderEncoder = require("html-encoder-decoder");
 
 function Mymemo() {
-  const { email } = useParams();
+
+  //const { email } = useParams();  
+
+  const params = useParams();
+
+  useEffect(() => {
+
+  },[params.date]); //더블 클릭을 해야지만 바뀐다?
+
+  const clickDay = (value) => { //매개변수로 피라미터가 들어온다
+    const a = moment(value).format("YYYY-MM-DD");
+    navigate(`/user/${usemail}/${a}`);
+  }
+
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+  var day = ('0' + today.getDate()).slice(-2);
+  var dateString = year + '-' + month  + '-' + day;
+
 
   const [dataList, setdataList] = useState(null);
   const item = JSON.parse(localStorage.getItem("memo-app-user"));
@@ -136,18 +154,14 @@ function Mymemo() {
   const GetData = async () => {
     const response = await axios.post(mymemoRoute);
     setdataList(response.data);
-
-    console.log(response.data);
-    console.log(response);
   };
 
   useEffect(() => {
     GetData();
   }, []);
-  // const list = JSON.stringify(dataList);
+
   // 제목과 같은 콘텐츠를 옆에 출력
   const [content, setContent] = useState([]);
-  console.log(content);
 
   //누르면 생성
   const handleClickButton = (e) => {
@@ -162,16 +176,6 @@ function Mymemo() {
         newArrays.push(e._id, e.title, e.writer, e.content, e.time);
       });
 
-  console.log(mes);
-
-  var today = new Date();
-
-  var year = today.getFullYear();
-  var month = ('0' + (today.getMonth() + 1)).slice(-2);
-  var day = ('0' + today.getDate()).slice(-2);
-
-  var dateString = year + '-' + month  + '-' + day;
-
   const mos = {
     _id : newArrays[0],
     title: newArrays[1],
@@ -179,11 +183,6 @@ function Mymemo() {
     content: newArrays[3],
     time: dateString,
   }; // 새로운 데이터
-
-  console.log(mos);
-  // console.log(mo);
-
-  //값이 있으면 작동 없으면 err
 
   const onSubmit = async () => {
     if (handleValidation()) {
@@ -193,7 +192,7 @@ function Mymemo() {
       }
       if (data.status === true) {
         //navigate("/");
-        navigate(`/${date}`);
+        navigate(`/${params.date}`);
 
       }
     }
@@ -217,26 +216,13 @@ function Mymemo() {
   };
 
   const HOME = () => {
-    navigate("/");
+    navigate(`/${dateString}`);
   };
-
 
   const Write = async () => {
     navigate("/write");
   };
 
-  const [selectedDayRange, setSelectedDayRange] = useState(new Date()); //실행 될 때마다 date로 페이지 리로드.
-  const date = moment(selectedDayRange).format("YYYY-MM-DD");
-
-   useEffect(() => {
-    window.history.pushState({}, "", `/user/${usemail}/${date}`);
-  }, [date]);
-
-  const datas = mos.content
-    ? mos.content.includes("%A0")
-      ? mos.content.replace(/%A0/gi, "\n")
-      : mos.content
-    : null;
   const view = decodeURIComponent(mos.content);
 
   return (
@@ -257,7 +243,7 @@ function Mymemo() {
           <Nav.Item>
             <Calendar
               className="Cal"
-              onChange={setSelectedDayRange}
+              onClickDay={clickDay}
             />
             <br></br>
             <div className="row">
@@ -265,7 +251,7 @@ function Mymemo() {
                 ? dataList?.content
                     .filter(
                       (e) =>
-                        e.time.slice(0, 10) === date && e.writer === usemail
+                        e.time.slice(0, 10) === params.date && e.writer === usemail
                     )
                     .map((e, index) => (
                       <div className={index}>

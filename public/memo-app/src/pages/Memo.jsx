@@ -1,9 +1,9 @@
-import React, { useState, useEffect, Component, useRef } from "react";
+import React, { useState, useEffect, Component, useRef, useMemo } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import axios from "axios";
 import Nav from "../Nav";
-import { useNavigate, NavLink, useParams } from "react-router-dom";
+import { useNavigate, NavLink, useParams, useLocation } from "react-router-dom";
 import "moment/locale/ko";
 import { createGlobalStyle } from "styled-components";
 import TableRow from "@material-ui/core/TableRow";
@@ -133,30 +133,56 @@ function Memo() {
 
   const params = useParams();
 
- // console.log("p.Date",params.date)
+  const navigate = useNavigate();
+
+
+ // const location = useLocation();
+  const wrongURL = params['*'];
+  console.log(wrongURL);
+  console.log(params);
+
+  useEffect(()=>{
+    if(wrongURL !== ""){
+      navigate("/PageNotFound")
+    }
+  },[wrongURL])
 
   useEffect(() => {
-    console.log("asd",params.date);
+    console.log(params.date);
   },[params.date]); //더블 클릭을 해야지만 바뀐다?
 
 
-  //console.log("params.date : ", params.date);
-  //onclickday value
   const clickDay = (value) => { //매개변수로 피라미터가 들어온다
-    const a = moment(value).format("YYYY-MM-DD");
-    navigate(`/${a}`);
+
+    const date = moment(value).format("YYYY-MM-DD");
+
+    navigate(`/${date}`);
+
   }
 
+  //const currentDate = useMemo(() => (new Date(params.date)), [params.date]); //만약 new Date(params.date) 가 date object가 아니라면?
+
+  const currentDate = useMemo(() => new Date(params.date), [params.date]); //2022-12-sdfksjdkls 
+
+  useEffect(() => {
+    if (currentDate.toString() === 'Invalid Date') {
+      navigate(`/PageNotFound`);
+    }
+  }, [currentDate]);
+
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+  var day = ('0' + today.getDate()).slice(-2);
+  var dateString = year + '-' + month  + '-' + day;
 
   //console.log(params); 선택된 날짜 확인
 
-  const navigate = useNavigate();
   const [dataList, setdataList] = useState(null);
   const item = JSON.parse(localStorage.getItem("memo-app-user"));
 
   const GetData = async () => {
     const response = await axios.post(mainRoute);
-    //console.log(response.data.content.filter((time) => time === date));
     setdataList(response.data);
     //console.log("success");
   };
@@ -164,11 +190,10 @@ function Memo() {
   const DelData = async (id) => {
     await axios.delete(`${mainDeleteRoute}/${id}`);
 
-    window.location.reload(`/${date}`);//당첨
-    //navigate(`/${date}`); //안되는 이유?
+    window.location.reload(`/${params.date}`);//당첨 강제새로고침 네비게이트 (navigate samepage)
+    //navigate(`/${date}`); //안되는 이유? 피라미타가 변경된 것을 감지를 못함.
    }; //삭제 성공
  
-
   useEffect(() => {
     GetData();
   }, []);
@@ -207,30 +232,6 @@ function Memo() {
 
   deldatas.user = item.email;
 
-  // const DelData = async () => {
-  //   if (handleValidation()) {
-  //     const { data } = await axios.post(delmain, deldatas);
-  //     if (data.status === false) {
-  //       console.log("data err");
-  //     }
-  //     if (data.status === true) {
-  //       window.location.reload();
-  //     }
-  //   }
-  //   // if (handleValidation()){
-  //   //   const {data} = await axios.delete(mainRoute, {data : deldatas});
-
-  //   //   if(data.status === false){
-  //   //     console.log("s");
-  //   //   }
-
-  //   //   if(data.status === true){
-  //   //     console.log("a");
-  //   //   }
-  //   };
-  
-
-
   const handleValidation = () => {
     if (
       deldatas.title === "" &&
@@ -251,29 +252,15 @@ function Memo() {
     return true;
   };
 
-  const [selectedDayRange, setSelectedDayRange] = useState(new Date());
-  const date = moment(selectedDayRange).format("YYYY-MM-DD");
-  //console.log(date);
-  // const [selectedDayRanges, setSelectedDayRanges] = useState(new Date());
-
-  // const onChangeDay = selectedDayRanges => {
-  //   setSelectedDayRanges(selectedDayRanges);
-  // }
-
-  // console.log(date);
-
   const view = decodeURIComponent(deldatas.contentBody);
   //console.log(view); // 메모 내용 확인.
 
-  //console.log(localDate.slice(0, 10));
-  //<button>달력</button>
-  //<h2 style={{ color: "white" }}>{item.email}'s memo</h2>
   return (
     <Nav>
       <Wrapper>
         <h2 style={{ color: "white" }}>Memo Repository</h2>
 
-        <NavLink to={`/user/${item.email}`}>
+        <NavLink to={`/user/${item.email}/${dateString}`}>
           <button>My memo</button>
         </NavLink>
 
@@ -293,13 +280,13 @@ function Memo() {
             <Calendar
               className="Cal"
               onClickDay={clickDay}
-              onChange={setSelectedDayRange}
+              value={currentDate.toString() === 'Invalid Date' ? new Date() : currentDate}//new Date()는 오늘날짜로 반환 , 임시 데이터
             />
             <br></br>
             <div className="row">
               {dataList?.content !== undefined
                 ? dataList?.content
-                    .filter((e) => e.time.slice(0, 10) === date)
+                    .filter((e) => e.time.slice(0, 10) === params.date)
                     .map((e, index) => (
                       <div className={index}>
                         <Nav.Link key={index}>

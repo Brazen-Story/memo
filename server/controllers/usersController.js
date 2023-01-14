@@ -39,14 +39,3 @@ module.exports.login = async (req, res, next) => {
     next(ex);
   }
 };
-
-// MongoClient.connect(process.env.MONGO_URL, async function (err, db) {
-//   if (err) throw err;
-//   var dbo = db.db("test");
-//   const array = await dbo
-//     .collection("users")
-//     .find({}, { projection: { _id: 0, username: 1 } })
-//     .toArray();
-
-//   console.log(array);
-// });

@@ -3,8 +3,8 @@ const mainList = require("../model/mainModel");
 module.exports.main = async (req, res, next) => {
   try {
     const { title, contentBody, writer, time, user } = req.body;
-    console.log(req.body);
     const content = await mainList.find({});
+    //console.log(content);
     if (writer === user) {
       if (title && content && writer && time) {
         const main = await mainList.deleteMany({

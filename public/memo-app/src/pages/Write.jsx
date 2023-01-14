@@ -164,11 +164,18 @@ const { WriteRoute } = require("../utils/APIRoutes");
 const HTMLDecoderEncoder = require("html-encoder-decoder");
 
 function Write() {
+
   const item = JSON.parse(localStorage.getItem("memo-app-user"));
   const nowTime = moment().format("YYYY-MM-DD HH:mm:ss");
 
   const [text, setText] = useState();
   const [title, setTitle] = useState();
+
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+  var day = ('0' + today.getDate()).slice(-2);
+  var dateString = year + '-' + month  + '-' + day;
 
   const toastOptions = {
     position: "bottom-right",
@@ -179,12 +186,6 @@ function Write() {
   };
 
   const navigate = useNavigate();
-
-  // useEffect(()=>{
-  //   if(localStorage.getItem('memo-app-memo')) {
-  //     navigate(`/user/${item.email}`)
-  //   }
-  //   },[])
 
   let fileReader;
 
@@ -222,11 +223,11 @@ function Write() {
     }
 
     if (data.status === true) {
-      navigate(`/user/${item.email}`);
+      navigate(`/user/${item.email}/${dateString}`);
     }
   };
   const HOME = () => {
-    navigate("/");
+    navigate(`/${dateString}`);
   };
  
   return (
@@ -234,7 +235,7 @@ function Write() {
       <Wrapper>
         <h2 style={{ color: "white" }}>Write and Upload</h2>
         <button onClick={HOME}> MAIN PAGE </button>
-        <NavLink to={`/user/${item.email}`}>
+        <NavLink to={`/user/${item.email}/${dateString}`}>
           <button>My memo</button>
         </NavLink>
       </Wrapper>

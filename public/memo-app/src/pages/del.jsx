@@ -79,8 +79,6 @@ export const GlobalStyle = createGlobalStyle`
 
 function Del() {
 
-  const params = useParams();
-
   const navigate = useNavigate();
   //   const [data, setData] = useState(null);
   const item = JSON.parse(localStorage.getItem("memo-app-user"));
@@ -88,8 +86,14 @@ function Del() {
   const location = useLocation();
   const user = location.state.newArrays; //값 념겨받음
 
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = ('0' + (today.getMonth() + 1)).slice(-2);
+  var day = ('0' + today.getDate()).slice(-2);
+  var dateString = year + '-' + month  + '-' + day;
+
   const MOVE = () => {
-    navigate(`/user/${item.email}`); //다시 화면으로
+    navigate(`/user/${item.email}/${dateString}`); //다시 화면으로
   };
 
   const list = {
