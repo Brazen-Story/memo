@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "moment/locale/ko";
 import moment from "moment";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Nav from "../Nav";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
@@ -161,8 +161,6 @@ const Wrapper = styled.div`
 
 const { WriteRoute } = require("../utils/APIRoutes");
 
-const HTMLDecoderEncoder = require("html-encoder-decoder");
-
 function Write() {
 
   const item = JSON.parse(localStorage.getItem("memo-app-user"));
@@ -214,6 +212,7 @@ function Write() {
   };
 
   console.log("memolist", memolist);
+
   const onSubmit = async () => {
     const { data } = await axios.post(WriteRoute, memolist);
 
@@ -226,6 +225,7 @@ function Write() {
       navigate(`/user/${item.email}/${dateString}`);
     }
   };
+
   const HOME = () => {
     navigate(`/${dateString}`);
   };
@@ -258,8 +258,10 @@ function Write() {
           <br />
           <br />
           <h2>{title && <pre>{title}</pre>}</h2>
+          <input value={title} onChange={titleChange}></input>
           <br></br>
           {decodeURIComponent(text) && <pre>{decodeURIComponent(text)}</pre>}
+          <textarea value={title}></textarea>
         </Main>
       </div>
     </Nav>

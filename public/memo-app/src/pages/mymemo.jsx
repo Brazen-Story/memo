@@ -129,12 +129,12 @@ function Mymemo() {
   const params = useParams();
 
   useEffect(() => {
-
+    //console.log(params.date);
   },[params.date]); //더블 클릭을 해야지만 바뀐다?
 
   const clickDay = (value) => { //매개변수로 피라미터가 들어온다
-    const a = moment(value).format("YYYY-MM-DD");
-    navigate(`/user/${usemail}/${a}`);
+    const date = moment(value).format("YYYY-MM-DD");
+    navigate(`/user/${usemail}/${date}`);
   }
 
   var today = new Date();
@@ -192,7 +192,7 @@ function Mymemo() {
       }
       if (data.status === true) {
         //navigate("/");
-        navigate(`/${params.date}`);
+        navigate(`/${dateString}`);
 
       }
     }

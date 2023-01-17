@@ -1,9 +1,9 @@
-import React, { useState, useEffect, Component, useRef, useMemo } from "react";
+import React, { useState, useEffect, Component, useRef, useMemo, useCallback } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import axios from "axios";
 import Nav from "../Nav";
-import { useNavigate, NavLink, useParams, useLocation } from "react-router-dom";
+import { useNavigate, NavLink, useParams  } from "react-router-dom";
 import "moment/locale/ko";
 import { createGlobalStyle } from "styled-components";
 import TableRow from "@material-ui/core/TableRow";
@@ -44,6 +44,9 @@ const Main = styled.main`
   }
 
   font-family: "Noto Sans KR", sans-serif;
+  h3{
+    text-align: center;
+  }
 `;
 
 const Layout = styled.div`
@@ -134,12 +137,8 @@ function Memo() {
   const params = useParams();
 
   const navigate = useNavigate();
-
-
  // const location = useLocation();
   const wrongURL = params['*'];
-  console.log(wrongURL);
-  console.log(params);
 
   useEffect(()=>{
     if(wrongURL !== ""){
@@ -148,9 +147,8 @@ function Memo() {
   },[wrongURL])
 
   useEffect(() => {
-    console.log(params.date);
+    //console.log(params.date);
   },[params.date]); //더블 클릭을 해야지만 바뀐다?
-
 
   const clickDay = (value) => { //매개변수로 피라미터가 들어온다
 
@@ -189,9 +187,7 @@ function Memo() {
 
   const DelData = async (id) => {
     await axios.delete(`${mainDeleteRoute}/${id}`);
-
     window.location.reload(`/${params.date}`);//당첨 강제새로고침 네비게이트 (navigate samepage)
-    //navigate(`/${date}`); //안되는 이유? 피라미타가 변경된 것을 감지를 못함.
    }; //삭제 성공
  
   useEffect(() => {
@@ -251,9 +247,20 @@ function Memo() {
     }
     return true;
   };
-
   const view = decodeURIComponent(deldatas.contentBody);
-  //console.log(view); // 메모 내용 확인.
+
+  const exportTxt = () => { //서버로부터 받기
+    let fileName = list[1];
+    let output =  decodeURIComponent(list[4]);
+    const element = document.createElement('a');
+    const file = new Blob([output], {
+      type: 'text/plain',
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = fileName;
+    document.body.appendChild(element);
+    element.click();
+  };
 
   return (
     <Nav>
@@ -322,19 +329,21 @@ function Memo() {
             </div>
           </Nav.Item>
         </Nav.List>
-
         <Main className="content">
-          <h3>제목 : {deldatas.title}</h3>
+          <div>
+          <h3>{deldatas.title === undefined ? "Please choose a memo" : deldatas.title}</h3>
           <br />
           <h5>
             {view.split("\n").map((data) => (
               <div>
-                {data}
+                {deldatas.title === undefined ? null : data}
                 <br />
               </div>
             ))}
           </h5>
+          </div>
         </Main>
+        <button onClick={()=>exportTxt()}>Download</button>  
       </Layout>
     </Nav>
   );
