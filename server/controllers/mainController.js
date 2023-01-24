@@ -32,6 +32,20 @@ module.exports.mainDeleteRoute = async (req, res, next) => { // 아이디 받아
   }
 };
 
+module.exports.mainUpdateRoute = async (req, res) =>{
+  try{
+    const newmainList = req.body.newmainList
+    const id = req.body.id;
+    await mainList.findById(id, (err, updateList) => {
+      updateList.mainList = newmainList;
+      updateList.save();
+      res.send("update");
+    });
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 // module.exports.main = async (req, res, next) => {
 //   try {
 //     const { title, contentBody, writer, time, user } = req.body;

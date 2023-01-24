@@ -14,7 +14,7 @@ import Calendar from "react-calendar";
 import moment from "moment";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-
+import { myDeleteRoute } from "../utils/APIRoutes";
 export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
@@ -167,11 +167,12 @@ function Mymemo() {
   const handleClickButton = (e) => {
     const { name } = e.target;
     setContent(name.split(","));
+    console.log(name);
   };
 
     const newArrays = [];
     const mes = dataList?.content
-      .filter((e) => e.writer === content[0] && e.title === content[1])
+      .filter((e) => e.writer === content[0] && e.title === content[1] && e.content === content[2])
       .map((e) => {
         newArrays.push(e._id, e.title, e.writer, e.content, e.time);
       });
@@ -183,6 +184,8 @@ function Mymemo() {
     content: newArrays[3],
     time: dateString,
   }; // 새로운 데이터
+  console.log(content)
+
 
   const onSubmit = async () => {
     if (handleValidation()) {
@@ -224,6 +227,11 @@ function Mymemo() {
   };
 
   const view = decodeURIComponent(mos.content);
+
+  const DelData = async (id) => {
+    await axios.delete(`${myDeleteRoute}/${id}`);
+    window.location.reload();
+  }
 
   return (
     <Nav>
@@ -267,7 +275,7 @@ function Mymemo() {
                               <button
                                 className="bodybtn"
                                 onClick={handleClickButton}
-                                name={[e.writer, e.title]}
+                                name={[e.writer, e.title, e.content]}
                                 key={index}
                               >
                                 확인
@@ -281,9 +289,11 @@ function Mymemo() {
                             </TableCell>
                             <TableCell>
                               <div>
-                                <Link to="/del" state={{ newArrays }}>
-                                  <button className="bodybtn">삭제</button>
-                                </Link>
+                               
+                                <button className="bodybtn" onClick={() => DelData(e._id)}>
+                                {" "}
+                                삭제{" "}
+                              </button>
                               </div>
                             </TableCell>
                           </TableRow>

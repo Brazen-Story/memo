@@ -190,6 +190,14 @@ function Memo() {
     window.location.reload(`/${params.date}`);//당첨 강제새로고침 네비게이트 (navigate samepage)
    }; //삭제 성공
  
+  const updateList = async (id) => {
+    await axios.put(`${mainDeleteRoute}`,{
+      id : id,
+      //newmainList : newmainList,
+    });
+
+  }
+
   useEffect(() => {
     GetData();
   }, []);
@@ -213,6 +221,7 @@ function Memo() {
   const onSubmit = (e) => {
     const { name } = e.target;
     setContent(name.split(","));
+    console.log(deldatas);
     //console.log(name);
     // const { writer } = e.target;
     // setWriter(writer);
@@ -261,6 +270,8 @@ function Memo() {
     document.body.appendChild(element);
     element.click();
   };
+
+  
 
   return (
     <Nav>
@@ -343,7 +354,9 @@ function Memo() {
           </h5>
           </div>
         </Main>
-        <button onClick={()=>exportTxt()}>Download</button>  
+        {deldatas.title === undefined ?  null : <button onClick={()=>exportTxt()}>Download</button>}
+        {deldatas.title === undefined ?  null : <button onClick={write}>Update</button>}
+        
       </Layout>
     </Nav>
   );

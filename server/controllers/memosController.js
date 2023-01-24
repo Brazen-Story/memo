@@ -40,22 +40,12 @@ module.exports.mymemo = async (req, res, next) => {
   }
 };
 
-module.exports.del = async (req, res, next) => {
+module.exports.myDeleteRoute = async (req, res, next) => { // 아이디 받아서 삭제 성공
   try {
-    const { title, content, writer, time, user } = req.body;
-    if (writer === user) {
-      //console.log(writer === user);//true
-      console.log("개인 삭제 발동")
-      const main = await memoList.deleteMany({
-        title,
-        writer,
-        content,
-        time,
-      });
-      return res.json({ status: true, content });
-    }
+      const id = req.params.id;
+      await memoList.findByIdAndRemove(id).exec();
+      return res.json({ status: true });
   } catch (ex) {
-    console.log("del", ex);
     next(ex);
   }
 };

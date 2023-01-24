@@ -5,7 +5,6 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Write from "./pages/Write";
 import Mymemo from "./pages/mymemo";
-import Del from "./pages/del";
 import PageNotFound from "./pages/PageNotFound";
 
 
@@ -18,7 +17,6 @@ function App() {
         <Route exact path="/write" element={<Write />} />
         <Route exact path="/user/:email/:date" element={<Mymemo />} />
         <Route exact path="/:date/*" element={<Memo />} /> 
-        <Route exact path="/del" element={<Del />} />
         {/* <Route path="/*" element={<PageNotFound />} /> */}
         <Route path="/PageNotFound" element={<PageNotFound />} />
       </Routes>

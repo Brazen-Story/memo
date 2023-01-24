@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, uesCallback } from "react";
 import "moment/locale/ko";
 import moment from "moment";
 import axios from "axios";
@@ -9,6 +9,9 @@ import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 
 import "react-toastify/dist/ReactToastify.css";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import { mainUpdateRoute } from "../utils/APIRoutes";
 
 export const GlobalStyle = createGlobalStyle`
   body {
@@ -211,10 +214,13 @@ function Write() {
     time: nowTime,
   };
 
-  console.log("memolist", memolist);
+
+
+  console.log(memolist)
 
   const onSubmit = async () => {
     const { data } = await axios.post(WriteRoute, memolist);
+    console.log(memolist);
 
     if (data.status === false) {
       alert("제목을 바꿔주세요!");
@@ -229,6 +235,36 @@ function Write() {
   const HOME = () => {
     navigate(`/${dateString}`);
   };
+
+  const onTitleChange = useCallback(e => {
+    setTitle(e.target.value);
+  })
+
+  const onTextChange = useCallback(e => {
+    setText(e.target.value)
+  })
+
+  const onUpdate = async () => {
+    console.log("hi")
+  }
+
+  const updateList = async (id) => {
+    await axios.put(`${mainUpdateRoute}`,{
+      id : id,
+      //newmainList : newmainList,
+    });
+
+  }
+
+  // const [clockState, setClockState] = useState();
+
+  // useEffect(() => {
+  //   setInterval(()=> {
+  //     const date = new Date();
+  //     setClockState(date.toLocaleTimeString());
+  //   },1000);
+  //   }, []);
+
  
   return (
     <Nav>
@@ -242,6 +278,9 @@ function Write() {
 
       <Layout>
         <GlobalStyle />
+        <button onClick={onUpdate}>
+          수정
+        </button>
         <button onClick={onSubmit} className="smbtn">
           저장
         </button>
@@ -254,14 +293,12 @@ function Write() {
       </Layout>
       <div>
         <Main>
-          현재시간 : {nowTime}
           <br />
           <br />
-          <h2>{title && <pre>{title}</pre>}</h2>
-          <input value={title} onChange={titleChange}></input>
-          <br></br>
-          {decodeURIComponent(text) && <pre>{decodeURIComponent(text)}</pre>}
-          <textarea value={title}></textarea>
+          <input type="text" value={title} onChange={onTitleChange}></input><button>초기화</button>
+          <br />
+          <br />
+          <textarea type="text" value={decodeURIComponent(text)} onChange={(e)=> onTextChange(e)}></textarea>
         </Main>
       </div>
     </Nav>
